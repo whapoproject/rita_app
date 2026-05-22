@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Private Chat</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            background:#0f172a;
+            color:white;
+            margin:0;
+            padding:0;
+        }
+
+        .container{
+            max-width:600px;
+            margin:auto;
+            padding:20px;
+        }
+
+        .box{
+            background:#1e293b;
+            padding:20px;
+            border-radius:12px;
+            margin-top:30px;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:8px;
+            margin-top:10px;
+            margin-bottom:15px;
+            font-size:16px;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            background:#2563eb;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:16px;
+        }
+
+        button:hover{
+            background:#1d4ed8;
+        }
+
+        .message-box{
+            background:#334155;
+            padding:10px;
+            border-radius:10px;
+            margin-top:10px;
+        }
+
+        .my-message{
+            background:#2563eb;
+        }
+
+        .top-text{
+            color:#94a3b8;
+            font-size:14px;
+        }
+
+        .error{
+            color:red;
+            margin-bottom:10px;
+        }
+
+        #messages{
+            max-height:400px;
+            overflow-y:auto;
+            margin-top:20px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="box">
+
+        <h2>
+            Private Chat
+        </h2>
+
+        <p class="top-text">
+            Connected with:
+            <strong>{{ room.creator.username }}</strong>
+        </p>
+
+        <!-- JOIN SCREEN -->
+        {% if not guest_name %}
+
+            {% if error %}
+                <p class="error">
+                    {{ error }}
+                </p>
+            {% endif %}
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <input
+                    type="text"
+                    name="nickname"
+                    placeholder="Choose your nickname"
+                    required
+                >
+
+                <button type="submit">
+                    Join Chat
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <!-- CHAT AREA -->
+
+            <p>
+                You joined as:
+                <strong>{{ guest_name }}</strong>
+            </p>
+
+            <div id="messages">
+
+                {% for msg in messages %}
+
+                    <div class="message-box {% if msg.sender_name == guest_name %}my-message{% endif %}">
+
+                        <strong>
+                            {{ msg.sender_name }}
+                        </strong>
+
+                        <p>
+                            {{ msg.content }}
+                        </p>
+
+                        <small>
+                            {{ msg.timestamp|date:"H:i" }}
+                        </small>
+
+                    </div>
+
+                {% empty %}
+
+                    <p>
+                        No messages yet.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+            <form id="chat-form">
+
+                {% csrf_token %}
+
+                <input
+                    type="text"
+                    id="message-input"
+                    placeholder="Type message..."
+                    required
+                >
+
+                <button type="submit">
+                    Send Message
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% if guest_name %}
+
+<script>
+
+const form = document.getElementById('chat-form');
+
+form.addEventListener('submit', async function(e){
+
+    e.preventDefault();
+
+    const messageInput =
+        document.getElementById('message-input');
+
+    const message = messageInput.value;
+
+    const formData = new FormData();
+
+    formData.append('content', message);
+
+    const response = await fetch(
+        "/send-message/{{ room.room_id }}/",
+        {
+            method: "POST",
+            body: formData,
+            headers:{
+                "X-CSRFToken":"{{ csrf_token }}"
+            }
+        }
+    );
+
+    if(response.ok){
+
+        messageInput.value = "";
+
+        loadMessages();
+    }
+
+});
+
+
+// AUTO LOAD MESSAGES
+async function loadMessages(){
+
+    const response = await fetch(
+        "/fetch-messages/{{ room.room_id }}/"
+    );
+
+    const data = await response.json();
+
+    let html = "";
+
+    data.messages.forEach(msg => {
+
+        html += `
+            <div class="message-box ${msg.sender === "{{ guest_name }}" ? "my-message" : ""}">
+                <strong>${msg.sender}</strong>
+                <p>${msg.content}</p>
+                <small>${msg.timestamp}</small>
+            </div>
+        `;
+    });
+
+    document.getElementById('messages').innerHTML = html;
+}
+
+
+// AUTO REFRESH
+setInterval(loadMessages, 3000);
+
+</script>
+
+{% endif %}
+
+</body>
+</html>

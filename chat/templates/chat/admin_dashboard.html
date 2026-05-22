@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#0b1220;
+    color:white;
+}
+
+/* HEADER */
+.header{
+    padding:20px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    padding:20px;
+}
+
+/* CARD */
+.card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:15px;
+    padding:15px;
+    backdrop-filter: blur(10px);
+}
+
+.card h3{
+    margin:0;
+    font-size:14px;
+    color:#94a3b8;
+}
+
+.card p{
+    font-size:20px;
+    margin-top:8px;
+    font-weight:bold;
+}
+
+/* SECTIONS */
+.section{
+    padding:20px;
+}
+
+.section-title{
+    font-size:16px;
+    margin-bottom:10px;
+    color:#cbd5e1;
+}
+
+/* ACTIVITY BOX */
+.box{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    padding:15px;
+    border-radius:12px;
+    max-height:300px;
+    overflow-y:auto;
+}
+
+.item{
+    padding:10px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+    font-size:14px;
+}
+
+.badge{
+    font-size:12px;
+    padding:3px 8px;
+    border-radius:20px;
+    background:#1f2937;
+    margin-left:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    🔥 Admin Dashboard 2026
+</div>
+
+<!-- =========================
+     STATS CARDS
+========================= -->
+<div class="grid">
+
+    <div class="card">
+        <h3>Total Users</h3>
+        <p>{{ total_users }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Messages</h3>
+        <p>{{ total_messages }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Today Messages</h3>
+        <p>{{ today_messages }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Rooms</h3>
+        <p>{{ total_rooms }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Active Rooms</h3>
+        <p>{{ active_rooms }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Expired Rooms</h3>
+        <p>{{ expired_rooms }}</p>
+    </div>
+
+</div>
+
+<!-- =========================
+     INSIGHTS
+========================= -->
+<div class="section">
+
+    <div class="section-title">🔥 Insights</div>
+
+    <div class="box">
+
+        <div class="item">
+            🏆 Top Sender:
+            {% if top_sender %}
+                {{ top_sender.sender_name }} ({{ top_sender.total }})
+            {% else %}
+                No data
+            {% endif %}
+        </div>
+
+        <div class="item">
+            🏠 Most Active Room:
+            {% if top_room %}
+                {{ top_room.room_id }}
+            {% else %}
+                No data
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     RECENT ACTIVITY
+========================= -->
+<div class="section">
+
+    <div class="section-title">⚡ Recent Messages</div>
+
+    <div class="box">
+
+        {% for m in recent_messages %}
+        <div class="item">
+            <strong>{{ m.sender_name }}</strong>:
+            {{ m.content|default:"media" }}
+            <span class="badge">{{ m.timestamp }}</span>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- =========================
+     RECENT ROOMS
+========================= -->
+<div class="section">
+
+    <div class="section-title">🏠 Recent Rooms</div>
+
+    <div class="box">
+
+        {% for r in recent_rooms %}
+        <div class="item">
+            Room: {{ r.room_id }}
+            <span class="badge">{{ r.created_at }}</span>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

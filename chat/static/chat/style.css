@@ -1,0 +1,385 @@
+/* Base styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 300px;
+    background: #2c3e50;
+    color: white;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+}
+
+.user-list a,
+.user-link {
+    display: block;
+    color: white;
+    padding: 8px 10px;
+    text-decoration: none;
+    position: relative;
+    border-radius: 5px;
+    background: #2c3e50;
+    transition: background 0.3s;
+    margin-bottom: 8px;
+}
+
+.user-list a:hover,
+.user-list a.active,
+.user-link:hover {
+    background: #34495e;
+}
+
+.new-chat {
+    font-weight: bold;
+    color: #3498db;
+    cursor: pointer;
+}
+
+.recent-message {
+    font-size: 12px;
+    color: #ccc;
+    margin-top: 5px;
+}
+
+.user-info {
+    flex-grow: 1;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.badge {
+    background-color: red;
+    color: white;
+    border-radius: 12px;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    right: 10px;
+    top: 8px;
+}
+
+/* Chat area */
+.chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #ecf0f1;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f1f1f1;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+    font-size: 18px;
+    color: #555;
+}
+
+.logged-in-user,
+.chatting-with {
+    font-size: 16px;
+}
+
+/* Messages area */
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+}
+
+.message-container {
+    display: flex;
+    margin: 5px 0;
+}
+
+.message-container.sent {
+    justify-content: flex-end;
+}
+
+.message-container.received {
+    justify-content: flex-start;
+}
+
+.message {
+    padding: 8px 12px;
+    border-radius: 20px;
+    max-width: 80%;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+
+.message.sent {
+    background: #3498db;
+    color: white;
+    text-align: right;
+}
+
+.message.received {
+    background: #bdc3c7;
+    color: black;
+    text-align: left;
+}
+
+.message audio {
+    margin-top: 5px;
+    max-width: 100%;
+}
+
+.transcription {
+    font-size: 12px;
+    font-style: italic;
+    color: #555;
+    margin-top: 3px;
+}
+
+/* Chat form */
+#message-form {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background: #ecf0f1;
+}
+
+#message-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-right: 10px;
+    outline: none;
+    min-width: 100px;
+}
+
+#message-form button[type="submit"],
+#record-button {
+    padding: 10px 12px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    color: white;
+    margin-top: 5px;
+}
+
+#message-form button[type="submit"] {
+    background-color: #3498db;
+}
+
+#record-button {
+    background-color: #2ecc71;
+    margin-left: 5px;
+}
+
+#message-form button:hover {
+    background-color: #2980b9;
+}
+
+#record-button:hover {
+    background-color: #27ae60;
+}
+
+/* Audio Recorder */
+.audio-recorder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#audioPlayer {
+    margin-left: 10px;
+}
+
+#recordBtn {
+    background: #eee;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .chat-container {
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .sidebar {
+        width: 100%;
+        max-height: 30vh;
+        overflow-y: auto;
+    }
+
+    .chat-area {
+        height: 70vh;
+    }
+
+    .chat-header {
+        font-size: 4vw;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1vw;
+    }
+
+    .messages {
+        padding: 2vw;
+        font-size: 3.5vw;
+    }
+
+    .message {
+        font-size: 3.5vw;
+        max-width: 90%;
+    }
+
+    #message-input {
+        font-size: 4vw;
+        padding: 2vw;
+    }
+
+    #message-form button,
+    #record-button {
+        font-size: 4vw;
+        padding: 2vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-header {
+        font-size: 4.5vw;
+    }
+
+    .message {
+        font-size: 4vw;
+    }
+
+    .sidebar h3 {
+        font-size: 5vw;
+    }
+
+    .new-chat,
+    .user-link {
+        font-size: 4vw;
+    }
+}
+/* Recording UI */
+#recording-ui {
+    display: none; /* initially hidden */
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background: #fff3cd;
+    border-top: 1px solid #ccc;
+    animation: slideUp 0.3s ease-in-out;
+    flex-wrap: wrap;
+}
+
+/* Recording Indicator */
+.recording-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: #d35400;
+    font-size: 16px;
+}
+
+.waveform {
+    display: flex;
+    gap: 2px;
+    height: 20px;
+}
+
+.bar {
+    width: 4px;
+    background: #e67e22;
+    animation: pulse 1s infinite ease-in-out;
+    animation-delay: calc(0.1s * var(--i));
+    border-radius: 2px;
+}
+
+.bar:nth-child(1) { --i: 1; }
+.bar:nth-child(2) { --i: 2; }
+.bar:nth-child(3) { --i: 3; }
+.bar:nth-child(4) { --i: 4; }
+
+@keyframes pulse {
+    0%, 100% { height: 6px; }
+    50% { height: 18px; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+#stop-recording,
+#cancel-recording {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    margin-left: 10px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#cancel-recording {
+    background-color: #7f8c8d;
+}
+
+#stop-recording:hover {
+    background-color: #c0392b;
+}
+
+#cancel-recording:hover {
+    background-color: #95a5a6;
+}
+#waveformCanvas {
+    background-color: #111;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+
+/* Responsive tweaks for recording UI */
+@media (max-width: 768px) {
+    #recording-ui {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .recording-indicator {
+        font-size: 4vw;
+    }
+
+    #stop-recording,
+    #cancel-recording {
+        font-size: 4vw;
+        padding: 2vw 4vw;
+    }
+}

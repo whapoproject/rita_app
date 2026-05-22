@@ -1,0 +1,231 @@
+/* Apply only on phones: max-width 599px */
+@media (max-width: 599px) {
+
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    font-size: 1rem;
+    background: #fff;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-height: 150px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .user-list {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+
+  .user-link {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.7rem;
+    background: #f5f5f5;
+    border-radius: 6px;
+    white-space: nowrap;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid transparent;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  .user-link.active,
+  .user-link:hover {
+    background: #007bff;
+    color: white;
+    border-color: #0056b3;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .badge {
+    background: #dc3545;
+    color: white;
+    font-size: 0.7rem;
+    padding: 0 6px;
+    border-radius: 12px;
+    line-height: 1.2;
+  }
+
+  .recent-message {
+    font-size: 0.75rem;
+    color: #555;
+    margin-top: 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+  }
+
+  .chat-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chat-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #444;
+  }
+
+  .chat-header > div {
+    margin-bottom: 0.2rem;
+  }
+
+  #chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 60vh;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fafafa;
+  }
+
+  .message-container {
+    margin-bottom: 0.6rem;
+    word-wrap: break-word;
+  }
+
+  .message-container.sent {
+    text-align: right;
+  }
+
+  .message-container.sent .message {
+    background: #007bff;
+    color: white;
+    display: inline-block;
+    padding: 0.4rem 0.7rem;
+    border-radius: 15px 15px 0 15px;
+    max-width: 80%;
+  }
+
+  .message-container.received .message {
+    background: #e2e2e2;
+    color: #222;
+    display: inline-block;
+    padding: 0.4rem 0.7rem;
+    border-radius: 15px 15px 15px 0;
+    max-width: 80%;
+  }
+
+  .timestamp {
+    font-size: 0.65rem;
+    color: #888;
+    margin-top: 0.1rem;
+  }
+
+  #message-form {
+    flex-shrink: 0;
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+  }
+
+  #message-input {
+    flex-grow: 1;
+    font-size: 1rem;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  #message-form button {
+    font-size: 1rem;
+    padding: 0.6rem 0.9rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  #message-form button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+  }
+
+  #message-form button[type="button"] {
+    background-color: #28a745;
+    color: white;
+  }
+
+  #recording-ui,
+  #preview-controls {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+
+  #volumeMeter {
+    height: 8px;
+    border-radius: 4px;
+    margin-top: 0.3rem;
+  }
+
+  #waveform {
+    width: 100% !important;
+    max-width: 100%;
+    height: 80px !important;
+    background: #f0f0f0;
+    border-radius: 6px;
+    margin-top: 0.3rem;
+  }
+}
+
+/* Desktop and tablets - 600px and up */
+@media (min-width: 600px) {
+  .chat-container {
+    flex-direction: row;
+  }
+
+  .sidebar {
+    width: 250px;
+    max-height: none;
+    border-right: 1px solid #ccc;
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .user-list {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+
+  .chat-area {
+    flex-grow: 1;
+  }
+}
+.logout-button {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px 0;
+    text-align: left;
+    width: 100%;
+}
+.logout-button:hover {
+    text-decoration: underline;
+}

@@ -5,270 +5,774 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Private Chat Room</title>
+<title>RITA Secure Chat</title>
 
-    <link rel="stylesheet" href="{% static 'chat/style.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
+<style>
 
-        body{
-            margin:0;
-            padding:0;
-            background:#0f172a;
-            color:white;
-            font-family:Arial, sans-serif;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        .chat-container{
-            max-width:900px;
-            margin:auto;
-            height:100vh;
-            display:flex;
-            flex-direction:column;
-        }
+html,
+body{
+    width:100%;
+    height:100%;
+}
 
-        .top-bar{
-            background:#111827;
-            padding:15px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            border-bottom:1px solid #1f2937;
-        }
+body{
 
-        .room-info{
-            font-size:14px;
-            color:#9ca3af;
-        }
+    font-family:'Inter',sans-serif;
 
-        .share-box{
-            background:#1e293b;
-            padding:10px;
-            border-radius:10px;
-            margin:10px;
-        }
+    overflow:hidden;
 
-        .share-box input{
-            width:100%;
-            padding:12px;
-            border:none;
-            border-radius:8px;
-            background:#0f172a;
-            color:white;
-        }
+    background:
+    linear-gradient(rgba(2,6,23,0.82),rgba(2,6,23,0.92)),
+    url("{% static 'chat/images/rita-bg0.png' %}");
 
-        #messages{
-            flex:1;
-            overflow-y:auto;
-            padding:20px;
-            display:flex;
-            flex-direction:column;
-            gap:15px;
-        }
+    background-size:cover;
+    background-position:center;
 
-        .message{
-            max-width:75%;
-            padding:12px;
-            border-radius:15px;
-            word-wrap:break-word;
-        }
+    color:white;
+}
 
-        .mine{
-            align-self:flex-end;
-            background:#2563eb;
-        }
+/* LIGHT BACKGROUND BLUR */
 
-        .other{
-            align-self:flex-start;
-            background:#1e293b;
-        }
+body::before{
 
-        .sender{
-            font-size:13px;
-            color:#cbd5e1;
-            margin-bottom:5px;
-        }
+    content:"";
 
-        .time{
-            font-size:11px;
-            color:#94a3b8;
-            margin-top:5px;
-        }
+    position:fixed;
 
-        .message img{
-            max-width:250px;
-            border-radius:10px;
-            margin-top:10px;
-        }
+    inset:0;
 
-        .chat-form{
-            background:#111827;
-            padding:15px;
-            border-top:1px solid #1f2937;
-        }
+    backdrop-filter:blur(5px);
 
-        textarea{
-            width:100%;
-            height:70px;
-            resize:none;
-            border:none;
-            border-radius:10px;
-            padding:12px;
-            background:#1e293b;
-            color:white;
-            margin-bottom:10px;
-        }
+    z-index:-1;
+}
 
-        .actions{
-            display:flex;
-            gap:10px;
-            flex-wrap:wrap;
-        }
+/* WATERMARK */
 
-        button{
-            padding:10px 15px;
-            border:none;
-            border-radius:10px;
-            background:#2563eb;
-            color:white;
-            cursor:pointer;
-            font-weight:bold;
-        }
+body::after{
 
-        .danger-btn{
-            background:#dc2626;
-        }
+    content:"CONFIDENTIAL • RITA SECURE";
 
-        .timer{
-            color:#facc15;
-            font-size:14px;
-        }
+    position:fixed;
 
-        .copy-btn{
-            background:#374151;
-            font-size:12px;
-            padding:5px 10px;
-            margin-top:6px;
-            border-radius:6px;
-        }
+    top:50%;
 
-    </style>
+    left:50%;
+
+    transform:
+    translate(-50%,-50%)
+    rotate(-30deg);
+
+    font-size:52px;
+
+    font-weight:800;
+
+    color:rgba(255,255,255,0.025);
+
+    white-space:nowrap;
+
+    pointer-events:none;
+
+    z-index:9998;
+}
+
+/* PRIVACY OVERLAY */
+
+.privacy-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    pointer-events:none;
+
+    z-index:9999;
+
+    background-image:
+    repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,0.015) 0px,
+        rgba(255,255,255,0.015) 1px,
+        transparent 1px,
+        transparent 20px
+    );
+}
+
+/* MAIN */
+
+.chat-container{
+
+    width:100%;
+    max-width:1920px;
+
+    height:100dvh;
+
+    margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    padding:14px;
+
+    gap:12px;
+}
+
+/* TOP BAR */
+
+.top-bar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding:16px 22px;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,0.05);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(20px);
+
+    flex-shrink:0;
+}
+
+.top-left h2{
+
+    font-size:28px;
+
+    font-weight:800;
+}
+
+.room-info{
+
+    margin-top:6px;
+
+    font-size:13px;
+
+    color:#94a3b8;
+
+    word-break:break-all;
+}
+
+.timer{
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    background:rgba(250,204,21,0.12);
+
+    border:1px solid rgba(250,204,21,0.2);
+
+    color:#facc15;
+
+    font-size:14px;
+
+    font-weight:700;
+}
+
+/* SECURE */
+
+.secure-indicator{
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    font-size:12px;
+
+    animation:pulse 2s infinite;
+
+    flex-shrink:0;
+}
+
+@keyframes pulse{
+
+    0%{opacity:0.5;}
+    50%{opacity:1;}
+    100%{opacity:0.5;}
+}
+
+/* SHARE BOX */
+
+.share-box{
+
+    padding:16px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,0.05);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(20px);
+
+    flex-shrink:0;
+}
+
+.share-actions{
+
+    display:flex;
+
+    gap:12px;
+}
+
+.share-box input{
+
+    flex:1;
+
+    padding:15px 16px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,0.05);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:14px;
+}
+
+.copy-link-btn{
+
+    padding:15px 24px;
+
+    border:none;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-weight:700;
+
+    background:
+    linear-gradient(90deg,#9333ea,#2563eb);
+
+    transition:0.25s;
+}
+
+.copy-link-btn:hover{
+
+    transform:translateY(-2px);
+}
+
+/* CHAT AREA */
+
+.chat-main{
+
+    flex:1;
+
+    min-height:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+}
+
+/* MESSAGES */
+
+#messages{
+
+    flex:1;
+
+    min-height:0;
+
+    overflow-y:auto;
+
+    padding:28px;
+
+    border-radius:28px;
+
+    background:rgba(255,255,255,0.04);
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    backdrop-filter:blur(18px);
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+
+    scroll-behavior:smooth;
+}
+
+#messages::-webkit-scrollbar{
+
+    width:6px;
+}
+
+#messages::-webkit-scrollbar-thumb{
+
+    background:#334155;
+
+    border-radius:20px;
+}
+
+/* MESSAGE */
+
+.message{
+
+    max-width:72%;
+
+    padding:16px 18px;
+
+    border-radius:24px;
+
+    animation:fadeIn 0.25s ease;
+
+    position:relative;
+
+    transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.mine{
+
+    align-self:flex-end;
+
+    background:
+    linear-gradient(135deg,#2563eb,#3b82f6);
+
+    border-bottom-right-radius:8px;
+}
+
+.other{
+
+    align-self:flex-start;
+
+    background:rgba(255,255,255,0.07);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    border-bottom-left-radius:8px;
+}
+
+.sender{
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:#cbd5e1;
+
+    margin-bottom:8px;
+}
+
+.message-text{
+
+    font-size:15px;
+
+    line-height:1.7;
+
+    word-wrap:break-word;
+}
+
+.encrypted{
+
+    margin-top:8px;
+
+    font-size:10px;
+
+    color:#cbd5e1;
+
+    opacity:0.4;
+}
+
+.meta-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:10px;
+}
+
+.countdown{
+
+    font-size:11px;
+
+    color:#facc15;
+}
+
+.read-status{
+
+    font-size:11px;
+
+    color:#93c5fd;
+}
+
+.time{
+
+    margin-top:6px;
+
+    text-align:right;
+
+    font-size:10px;
+
+    color:#cbd5e1;
+}
+
+/* FORM */
+
+.chat-form{
+
+    padding:16px;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,0.05);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(25px);
+
+    flex-shrink:0;
+}
+
+textarea{
+
+    width:100%;
+
+    height:74px;
+
+    resize:none;
+
+    border:none;
+
+    outline:none;
+
+    padding:18px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,0.05);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:15px;
+
+    margin-bottom:14px;
+
+    transition:0.3s;
+}
+
+textarea:focus{
+
+    border:1px solid #8b5cf6;
+
+    transform:scale(1.01);
+
+    box-shadow:0 0 20px rgba(139,92,246,0.35);
+}
+
+textarea::placeholder{
+
+    color:#94a3b8;
+}
+
+.actions{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.send-btn{
+
+    width:60px;
+
+    height:60px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:
+    linear-gradient(90deg,#9333ea,#2563eb);
+
+    color:white;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    transition:0.25s;
+}
+
+.send-btn:hover{
+
+    transform:scale(1.05);
+}
+
+.danger-btn{
+
+    padding:14px 18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(90deg,#dc2626,#ef4444);
+
+    color:white;
+
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+#typing-status{
+
+    margin-top:10px;
+
+    color:#94a3b8;
+
+    font-size:13px;
+
+    min-height:18px;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+    .chat-container{
+
+        padding:0;
+
+        gap:0;
+
+        height:100dvh;
+    }
+
+    .top-bar{
+
+        border-radius:0;
+
+        padding:14px 16px;
+    }
+
+    .top-left h2{
+
+        font-size:18px;
+    }
+
+    .share-box{
+
+        border-radius:0;
+    }
+
+    .share-actions{
+
+        flex-direction:column;
+    }
+
+    .copy-link-btn{
+
+        width:100%;
+    }
+
+    #messages{
+
+        border-radius:0;
+
+        padding:16px;
+
+        gap:12px;
+    }
+
+    .message{
+
+        max-width:90%;
+    }
+
+    .chat-form{
+
+        border-radius:22px 22px 0 0;
+    }
+
+    textarea{
+
+        height:58px;
+
+        border-radius:28px;
+
+        padding:16px 18px;
+    }
+
+    .send-btn{
+
+        width:54px;
+        height:54px;
+    }
+}
+
+/* ANIMATION */
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:
+        translateY(10px)
+        scale(0.96);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+        translateY(0)
+        scale(1);
+    }
+}
+
+</style>
 
 </head>
 
 <body>
 
+<div class="privacy-overlay"></div>
+
 <div class="chat-container">
 
-    <!-- TOP BAR -->
-    <div class="top-bar">
+<div class="top-bar">
 
-        <div>
-            <h2>Secure Private Chat</h2>
+    <div class="top-left">
 
-            <div class="room-info">
-                Room: {{ room.room_id }}
-            </div>
-        </div>
+        <h2>
+            🔐 RITA Secure Chat
+        </h2>
 
-        <div class="timer">
-            Room expires: {{ room.expires_at }}
+        <div class="room-info">
+            Room: {{ room.room_id }}
         </div>
 
     </div>
 
-    <!-- SHARE LINK -->
-    {% if request.user == room.creator %}
+    <div class="timer">
+        ⏳ Loading...
+    </div>
 
-    <div class="share-box">
+</div>
 
-        <p>Share this private link:</p>
+<div class="secure-indicator">
+    🔒 End-to-End Encrypted
+</div>
 
-        <div style="display:flex; gap:10px;">
+{% if request.user == room.creator %}
 
-            <input id="shareLink"
-                type="text"
-                readonly
-                value="{{ request.scheme }}://{{ request.get_host }}{% url 'chat:chat_room' room.room_id %}"
-            >
+<div class="share-box">
 
-            <button type="button" onclick="copyLink()">
-                Copy
-            </button>
+    <div class="share-actions">
 
-        </div>
+        <input
+            id="shareLink"
+            type="text"
+            readonly
+            value="{{ request.scheme }}://{{ request.get_host }}{% url 'chat:chat_room' room.room_id %}"
+        >
+
+        <button
+            type="button"
+            class="copy-link-btn"
+            onclick="copyLink(this)"
+        >
+            Copy Link
+        </button>
 
     </div>
 
-    {% endif %}
+</div>
 
-    <!-- MESSAGES -->
-    <div id="messages">
+{% endif %}
 
-        {% for message in messages %}
+<div class="chat-main">
 
-            <div class="message {% if message.sender_name == request.user.username %}mine{% else %}other{% endif %}">
+    <div id="messages"></div>
 
-                <div class="sender">
-                    {{ message.sender_name }}
-                </div>
-
-                {% if message.content %}
-                    <div>{{ message.content }}</div>
-                {% endif %}
-
-                {% if message.image %}
-                    <img src="{{ message.image.url }}">
-                {% endif %}
-
-                {% if message.audio %}
-                    <audio controls>
-                        <source src="{{ message.audio.url }}">
-                    </audio>
-                {% endif %}
-
-                <div class="time">
-                    {{ message.timestamp }}
-                </div>
-
-                {% if message.content %}
-                <button class="copy-btn" onclick="copyText(this)" data-text="{{ message.content|default:'' }}">
-                    Copy
-                </button>
-                {% endif %}
-
-            </div>
-
-        {% endfor %}
-
-    </div>
-
-    <!-- CHAT FORM -->
     <div class="chat-form">
 
         <form id="message-form" enctype="multipart/form-data">
 
             {% csrf_token %}
 
-            <textarea name="content" id="content" placeholder="Type secure message..."></textarea>
+            <textarea
+                name="content"
+                id="content"
+                placeholder="Type secure message..."
+            ></textarea>
 
             <div class="actions">
 
-                <input type="file" name="image">
-                <input type="file" name="audio">
-
-                <button type="submit">Send</button>
-
                 {% if request.user == room.creator %}
+
                 <a href="{% url 'chat:end_chat' room.room_id %}">
-                    <button type="button" class="danger-btn">End Chat</button>
+
+                    <button
+                    type="button"
+                    class="danger-btn"
+                    >
+                        End
+                    </button>
+
                 </a>
+
                 {% endif %}
 
+                <button
+                type="submit"
+                class="send-btn"
+                >
+                    ➤
+                </button>
+
             </div>
+
+            <div id="typing-status"></div>
 
         </form>
 
@@ -276,17 +780,47 @@
 
 </div>
 
+</div>
+
 <script>
 
-const form = document.getElementById('message-form');
-const container = document.getElementById('messages');
+const form =
+document.getElementById('message-form');
 
-/* SEND MESSAGE */
+const container =
+document.getElementById('messages');
+
+const textarea =
+document.getElementById("content");
+
+const typingStatus =
+document.getElementById("typing-status");
+
+let renderedIds = new Set();
+
+/* TYPING */
+
+textarea.addEventListener("input", () => {
+
+    typingStatus.innerText = "Typing...";
+
+    clearTimeout(window.typingTimer);
+
+    window.typingTimer = setTimeout(() => {
+
+        typingStatus.innerText = "";
+
+    },1000);
+});
+
+/* SEND */
+
 form.addEventListener('submit', async function(e){
 
     e.preventDefault();
 
-    const formData = new FormData(form);
+    const formData =
+    new FormData(form);
 
     const response = await fetch(
         "{% url 'chat:send_message' room.room_id %}",
@@ -299,14 +833,19 @@ form.addEventListener('submit', async function(e){
     const data = await response.json();
 
     if(data.status === 'success'){
-        form.reset();
-        loadMessages();
-    }
 
+        form.reset();
+
+        loadMessages();
+
+        textarea.focus();
+    }
 });
 
+/* LOAD */
 
 /* LOAD MESSAGES */
+
 async function loadMessages(){
 
     const response = await fetch(
@@ -315,118 +854,280 @@ async function loadMessages(){
 
     const data = await response.json();
 
-    container.innerHTML = '';
+    const shouldStickBottom =
+        container.scrollTop +
+        container.clientHeight >=
+        container.scrollHeight - 120;
 
     data.messages.forEach(msg => {
 
-        const mine = msg.is_sender ? 'mine' : 'other';
+        let existing =
+        document.querySelector(
+            `.message[data-id="${msg.id}"]`
+        );
 
-        let html = `
-            <div class="message ${mine}">
-                <div class="sender">${msg.sender}</div>
+        /* IF MESSAGE ALREADY EXISTS SKIP */
+
+        if(existing){
+            return;
+        }
+
+        const mine =
+        msg.is_sender ? 'mine' : 'other';
+
+        const div =
+        document.createElement("div");
+
+        div.className =
+        `message ${mine}`;
+
+        div.setAttribute(
+            "data-id",
+            msg.id
+        );
+
+        const encrypted =
+        btoa(msg.content || '');
+
+        div.innerHTML = `
+
+            <div class="sender">
+                ${msg.sender}
+            </div>
+
+            ${
+                msg.content ?
+                `
+                <div class="message-text">
+                    ${msg.content}
+                </div>
+
+                <div class="encrypted">
+                    encrypted:
+                    ${encrypted.substring(0,40)}...
+                </div>
+                `
+                : ''
+            }
+
+            <div class="meta-row">
+
+                <div
+                    class="countdown"
+                    id="cd-${msg.id}"
+                >
+                    self destruct 10s
+                </div>
+
+                <div class="read-status">
+                    ✓✓ Seen
+                </div>
+
+            </div>
+
+            <div class="time">
+                ${msg.timestamp}
+            </div>
         `;
 
-        if(msg.content){
-            html += `<div>${msg.content}</div>`;
-        }
+        container.appendChild(div);
 
-        if(msg.image){
-            html += `<img src="${msg.image}">`;
-        }
-
-        if(msg.audio){
-            html += `
-                <audio controls>
-                    <source src="${msg.audio}">
-                </audio>
-            `;
-        }
-
-        html += `
-            <div class="time">${msg.timestamp}</div>
-        `;
-
-        if(msg.content){
-            const safeText = encodeURIComponent(msg.content);
-
-            html += `
-                <button class="copy-btn" onclick="copyEncoded('${safeText}')">
-                    Copy
-                </button>
-            `;
-        }
-
-        html += `</div>`;
-
-        container.innerHTML += html;
-
+        startCountdown(msg.id, div);
     });
 
-    container.scrollTop = container.scrollHeight;
+    /* REMOVE DELETED */
+
+    document.querySelectorAll(".message")
+    .forEach(el => {
+
+        const id =
+        el.getAttribute("data-id");
+
+        const exists =
+        data.messages.some(
+            msg => String(msg.id) === String(id)
+        );
+
+        if(!exists){
+
+            el.remove();
+        }
+    });
+
+    if(shouldStickBottom){
+
+        container.scrollTop =
+        container.scrollHeight;
+    }
+}
+/* SELF DESTRUCT */
+
+function startCountdown(id, div){
+
+    let timeLeft = 10;
+
+    const el =
+    document.getElementById(`cd-${id}`);
+
+    const interval =
+    setInterval(() => {
+
+        timeLeft--;
+
+        if(el){
+
+            /* BLUR ONLY AT LAST 1 SECOND */
+
+            if(timeLeft <= 1){
+
+                div.style.filter =
+                "blur(2px)";
+            }
+
+            el.innerText =
+            `self destruct ${timeLeft}s`;
+        }
+
+        if(timeLeft <= 0){
+
+            clearInterval(interval);
+
+            div.style.opacity = "0";
+
+            div.style.transform =
+            "scale(0.85)";
+
+            setTimeout(() => {
+
+                div.remove();
+
+                renderedIds.delete(id);
+
+            },250);
+        }
+
+    },1000);
 }
 
 loadMessages();
-setInterval(loadMessages, 2000);
 
+setInterval(loadMessages, 1500);
 
-/* COPY ROOM LINK */
-function copyLink(){
-    const link = document.getElementById("shareLink");
+/* COPY */
 
-    copyToClipboard(link.value);
-}
-
-
-/* COPY FROM BUTTON */
-function copyText(btn){
-    const text = btn.getAttribute("data-text");
-    copyToClipboard(text, btn);
-}
-
-
-/* COPY FROM ENCODED TEXT */
-function copyEncoded(encoded){
-    const text = decodeURIComponent(encoded);
-    copyToClipboard(text);
-}
-
-
-/* MAIN COPY ENGINE */
-function copyToClipboard(text, btn=null){
+async function copyToClipboard(
+    text,
+    btn=null
+){
 
     if(!text) return;
 
-    if(navigator.clipboard){
+    try{
 
-        navigator.clipboard.writeText(text)
-        .then(() => {
+        await navigator.clipboard
+        .writeText(text);
 
-            if(btn){
-                btn.innerText = "Copied";
-                setTimeout(() => btn.innerText = "Copy", 1200);
-            }
+    }catch(err){
 
-        })
-        .catch(() => fallbackCopy(text));
+        const temp =
+        document.createElement("textarea");
 
-    } else {
-        fallbackCopy(text);
+        temp.value = text;
+
+        document.body.appendChild(temp);
+
+        temp.select();
+
+        document.execCommand("copy");
+
+        document.body.removeChild(temp);
+    }
+
+    if(btn){
+
+        const original =
+        btn.innerText;
+
+        btn.innerText = "Copied ✓";
+
+        setTimeout(() => {
+
+            btn.innerText = original;
+
+        },1500);
     }
 }
 
+function copyLink(btn){
 
-/* FALLBACK */
-function fallbackCopy(text){
+    const link =
+    document.getElementById("shareLink");
 
-    const temp = document.createElement("textarea");
-    temp.value = text;
-    document.body.appendChild(temp);
-    temp.select();
-    document.execCommand("copy");
-    document.body.removeChild(temp);
-
-    alert("Copied!");
+    copyToClipboard(link.value, btn);
 }
+
+/* ROOM TIMER */
+
+let roomEndTime =
+new Date(
+"{{ room.expires_at|date:'c' }}"
+);
+
+function updateRoomTimer(){
+
+    let now = new Date();
+
+    let diff =
+    roomEndTime - now;
+
+    if(diff <= 0){
+
+        document.querySelector(
+            ".timer"
+        ).innerText = "EXPIRED";
+
+        location.reload();
+
+        return;
+    }
+
+    let sec =
+    Math.floor(diff / 1000);
+
+    let min =
+    Math.floor(sec / 60);
+
+    sec = sec % 60;
+
+    document.querySelector(
+        ".timer"
+    ).innerText =
+    `⏳ ${min}:${sec
+        .toString()
+        .padStart(2,'0')}`;
+}
+
+setInterval(updateRoomTimer,1000);
+
+updateRoomTimer();
+
+/* PRIVACY MODE */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+    if(document.hidden){
+
+        document.body.style.filter =
+        "blur(12px)";
+
+    }else{
+
+        document.body.style.filter =
+        "none";
+    }
+});
 
 </script>
 

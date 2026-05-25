@@ -9,7 +9,8 @@ from django.utils import timezone
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count
 from .models import Profile, ChatRoom, Message
-
+from django.http import HttpResponse
+from .models import ChatRoom, Message
 
 # =========================
 # REGISTER
@@ -73,6 +74,12 @@ def user_login(request):
         return redirect('chat:dashboard')
 
     return render(request, 'chat/login.html')
+####
+# Manuel uses
+def manual(request):
+    return render(request, 'chat/manual.html')
+def welcome(request):
+    return render(request, 'chat/welcome.html')
 
 
 # =========================
@@ -418,3 +425,31 @@ def admin_dashboard(request):
     }
 
     return render(request, "chat/admin_dashboard.html", context)
+
+
+
+
+def end_chat(request, room_id):
+    room = ChatRoom.objects.filter(room_id=room_id).first()
+
+    # If room already deleted or expired
+    if not room:
+        return HttpResponse(
+            "This chat room has expired or already been deleted.",
+            status=200
+        )
+
+    # Optional: extra safety check
+    if room.is_expired():
+        Message.objects.filter(room=room).delete()
+        room.delete()
+        return HttpResponse(
+            "Chat room expired and was cleaned up.",
+            status=200
+        )
+
+    # Normal cleanup
+    Message.objects.filter(room=room).delete()
+    room.delete()
+
+    return redirect("chat:dashboard")

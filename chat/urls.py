@@ -5,7 +5,7 @@ from . import views
 app_name = 'chat'
 
 urlpatterns = [
-path('', views.register, name='register'),
+path('register/', views.register, name='register'),
 path('login/', views.user_login, name='login'),
 path('logout/', views.custom_logout, name='logout'),
 
@@ -22,5 +22,7 @@ path('fetch-messages/<uuid:room_id>/', views.fetch_messages, name='fetch_message
 path('end-chat/<uuid:room_id>/', views.end_chat, name='end_chat'),
 
 path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+path("manual/", views.manual, name="manual"),
+path("", views.welcome, name="welcome"),
 ]
 

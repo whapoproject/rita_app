@@ -1,0 +1,678 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RITA • Secure Private App</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+
+            font-family:'Inter',sans-serif;
+
+            min-height:100vh;
+
+            background:
+            linear-gradient(rgba(3,7,18,0.85),rgba(3,7,18,0.95)),
+            url("{% static 'chat/images/rita-bg0.png' %}");
+
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+
+            color:white;
+
+            overflow-x:hidden;
+        }
+
+        .wrapper{
+
+            width:100%;
+            min-height:100vh;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            padding:20px;
+        }
+
+        .container{
+
+            width:100%;
+            max-width:1350px;
+
+            display:grid;
+            grid-template-columns:1.1fr 0.9fr;
+
+            gap:40px;
+
+            align-items:center;
+        }
+
+        /* LEFT SIDE */
+
+        .left-content{
+
+            animation:fadeIn 1s ease;
+        }
+
+        .badge{
+
+            display:inline-flex;
+
+            padding:10px 18px;
+
+            border-radius:40px;
+
+            background:rgba(255,255,255,0.05);
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            font-size:12px;
+            font-weight:600;
+
+            letter-spacing:1px;
+
+            margin-bottom:22px;
+        }
+
+        .logo{
+
+            font-size:82px;
+            font-weight:800;
+
+            line-height:1;
+
+            margin-bottom:18px;
+
+            background:linear-gradient(90deg,#8b5cf6,#2563eb);
+
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .title{
+
+            font-size:42px;
+            font-weight:800;
+
+            line-height:1.2;
+
+            margin-bottom:18px;
+        }
+
+        .title span{
+
+            color:#8b5cf6;
+        }
+
+        .subtitle{
+
+            font-size:15px;
+
+            line-height:1.9;
+
+            color:#cbd5e1;
+
+            max-width:650px;
+
+            margin-bottom:28px;
+        }
+
+        .features{
+
+            display:flex;
+            flex-wrap:wrap;
+
+            gap:12px;
+
+            margin-bottom:30px;
+        }
+
+        .feature{
+
+            padding:12px 16px;
+
+            border-radius:14px;
+
+            background:rgba(255,255,255,0.05);
+
+            border:1px solid rgba(255,255,255,0.06);
+
+            font-size:13px;
+
+            transition:0.3s;
+        }
+
+        .feature:hover{
+
+            transform:translateY(-4px);
+
+            background:rgba(139,92,246,0.12);
+        }
+
+        .buttons{
+
+            display:flex;
+            flex-wrap:wrap;
+
+            gap:14px;
+        }
+
+        .join-btn,
+        .learn-btn{
+
+            text-decoration:none;
+
+            padding:14px 24px;
+
+            border-radius:16px;
+
+            font-size:14px;
+            font-weight:700;
+
+            transition:0.3s;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .join-btn{
+
+            background:linear-gradient(90deg,#9333ea,#2563eb);
+
+            color:white;
+
+            box-shadow:0 0 30px rgba(147,51,234,0.35);
+        }
+
+        .join-btn:hover{
+
+            transform:translateY(-4px);
+        }
+
+        .learn-btn{
+
+            background:rgba(255,255,255,0.05);
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            color:white;
+        }
+
+        .learn-btn:hover{
+
+            transform:translateY(-4px);
+        }
+
+        /* RIGHT SIDE */
+
+        .glass-card{
+
+            width:100%;
+
+            max-width:430px;
+
+            padding:28px;
+
+            border-radius:28px;
+
+            background:rgba(255,255,255,0.05);
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            backdrop-filter:blur(30px);
+
+            box-shadow:0 0 50px rgba(0,0,0,0.4);
+        }
+
+        .card-title{
+
+            font-size:30px;
+            font-weight:700;
+
+            margin-bottom:14px;
+        }
+
+        .card-subtitle{
+
+            font-size:14px;
+
+            line-height:1.8;
+
+            color:#cbd5e1;
+
+            margin-bottom:24px;
+        }
+
+        .stats{
+
+            display:grid;
+            grid-template-columns:1fr 1fr;
+
+            gap:12px;
+
+            margin-bottom:25px;
+        }
+
+        .stat{
+
+            padding:16px;
+
+            border-radius:16px;
+
+            background:rgba(255,255,255,0.04);
+
+            border:1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat h3{
+
+            font-size:18px;
+
+            margin-bottom:6px;
+
+            color:#8b5cf6;
+        }
+
+        .stat p{
+
+            font-size:12px;
+
+            line-height:1.6;
+
+            color:#cbd5e1;
+        }
+
+        .bottom-buttons{
+
+            display:flex;
+            flex-direction:column;
+
+            gap:12px;
+
+            margin-top:15px;
+        }
+
+        .bottom-buttons a{
+
+            text-decoration:none;
+
+            padding:14px;
+
+            border-radius:15px;
+
+            text-align:center;
+
+            font-size:14px;
+            font-weight:700;
+
+            transition:0.3s;
+        }
+
+        .bottom-join{
+
+            background:linear-gradient(90deg,#9333ea,#2563eb);
+
+            color:white;
+        }
+
+        .bottom-learn{
+
+            background:rgba(255,255,255,0.05);
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            color:white;
+        }
+
+        .footer{
+
+            margin-top:20px;
+
+            text-align:center;
+
+            font-size:12px;
+
+            color:#94a3b8;
+        }
+
+        /* TABLET */
+
+        @media(max-width:1100px){
+
+            .container{
+
+                grid-template-columns:1fr;
+
+                gap:28px;
+            }
+
+            .left-content{
+
+                text-align:center;
+            }
+
+            .subtitle{
+
+                margin:auto auto 28px;
+            }
+
+            .features{
+
+                justify-content:center;
+            }
+
+            .buttons{
+
+                justify-content:center;
+            }
+
+            .glass-card{
+
+                margin:auto;
+            }
+        }
+
+        /* PHONES */
+
+        @media(max-width:700px){
+
+            .wrapper{
+
+                padding:16px;
+            }
+
+            .container{
+
+                gap:20px;
+            }
+
+            .left-content{
+
+                padding:5px;
+            }
+
+            .badge{
+
+                font-size:10px;
+
+                padding:8px 14px;
+
+                margin-bottom:18px;
+            }
+
+            .logo{
+
+                font-size:52px;
+
+                margin-bottom:12px;
+            }
+
+            .title{
+
+                font-size:24px;
+
+                line-height:1.35;
+
+                margin-bottom:14px;
+            }
+
+            .subtitle{
+
+                font-size:13px;
+
+                line-height:1.8;
+
+                margin-bottom:22px;
+            }
+
+            .features{
+
+                gap:10px;
+
+                margin-bottom:24px;
+            }
+
+            .feature{
+
+                width:100%;
+
+                text-align:center;
+
+                font-size:12px;
+
+                padding:11px 14px;
+            }
+
+            .buttons{
+
+                flex-direction:column;
+
+                gap:12px;
+            }
+
+            .join-btn,
+            .learn-btn{
+
+                width:100%;
+
+                font-size:13px;
+
+                padding:14px;
+            }
+
+            .glass-card{
+
+                padding:22px;
+
+                border-radius:24px;
+            }
+
+            .card-title{
+
+                font-size:24px;
+
+                text-align:center;
+            }
+
+            .card-subtitle{
+
+                font-size:13px;
+
+                text-align:center;
+            }
+
+            .stats{
+
+                grid-template-columns:1fr;
+
+                gap:10px;
+            }
+
+            .stat{
+
+                padding:14px;
+            }
+
+            .stat h3{
+
+                font-size:16px;
+            }
+
+            .stat p{
+
+                font-size:11px;
+            }
+
+            .bottom-buttons a{
+
+                font-size:13px;
+
+                padding:13px;
+            }
+
+            .footer{
+
+                font-size:11px;
+            }
+        }
+
+        @keyframes fadeIn{
+
+            from{
+                opacity:0;
+                transform:translateY(25px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="container">
+
+        <!-- FIRST PART -->
+
+        <div class="left-content">
+
+            <div class="badge">
+                🔒 PRIVATE • SECURE • ENCRYPTED
+            </div>
+
+            <div class="logo">
+                RITA
+            </div>
+
+            <div class="title">
+                THE FUTURE OF <br>
+                <span>PRIVATE COMMUNICATION</span>
+            </div>
+
+            <div class="subtitle">
+
+                Secure temporary messaging platform built for encrypted conversations,
+                disappearing messages, invite-only rooms, and complete privacy.
+
+            </div>
+
+            <div class="features">
+
+                <div class="feature">
+                    🔐 End-to-End Encryption
+                </div>
+
+                <div class="feature">
+                    💬 Temporary Chats
+                </div>
+
+                <div class="feature">
+                    👁️ No Tracking
+                </div>
+
+                <div class="feature">
+                    ⚡ Ultra Fast
+                </div>
+
+            </div>
+
+            <div class="buttons">
+
+                <a href="{% url 'chat:register' %}" class="join-btn">
+                    🚀 JOIN RITA
+                </a>
+
+                <a href="{% url 'chat:manual' %}" class="learn-btn">
+                    📘 LEARN MORE
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- SECOND PART -->
+
+        <div class="glass-card">
+
+            <div class="card-title">
+                Privacy Reimagined
+            </div>
+
+            <div class="card-subtitle">
+
+                Built for creators, couples, teams, and everyone who values secure private communication.
+
+            </div>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <h3>256-Bit</h3>
+                    <p>Encrypted architecture</p>
+                </div>
+
+                <div class="stat">
+                    <h3>24/7</h3>
+                    <p>Protected worldwide</p>
+                </div>
+
+                <div class="stat">
+                    <h3>0 Logs</h3>
+                    <p>No spying ever</p>
+                </div>
+
+                <div class="stat">
+                    <h3>Invite</h3>
+                    <p>Private secure rooms</p>
+                </div>
+
+            </div>
+
+            <div class="bottom-buttons">
+
+                <a href="{% url 'chat:register' %}" class="bottom-join">
+                    JOIN NOW
+                </a>
+
+                <a href="{% url 'chat:manual' %}" class="bottom-learn">
+                    LEARN MORE
+                </a>
+
+            </div>
+
+            <div class="footer">
+                Your privacy. Our promise.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

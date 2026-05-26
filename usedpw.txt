@@ -7,3 +7,9 @@ login
 admin aproval
 chat room
 get link to the guest
+
+
+
+server
+admin
+@AccessAdmin

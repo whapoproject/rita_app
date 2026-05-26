@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3wfcb=!n(e*kmd&v3yk)wv%ew0&oxhsp(&ij*cw$f4#)rmn=lo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -134,6 +134,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://localhost:8000',
     'https://965b-2c0f-eb68-6c9-7300-e703-e389-61fa-ebb1.ngrok-free.app',
+    "https://rita.securemesh.site",
 ]
 # settings.py
 MEDIA_URL = '/media/'

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'chat',
     'channels',
     'django.contrib.sitemaps',
+    'django.contrib.sites',
 
 ]
 
@@ -150,3 +151,11 @@ CHANNEL_LAYERS = {
     },
 }
 
+SITE_ID = 1
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+USE_X_FORWARDED_HOST = True
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True

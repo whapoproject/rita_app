@@ -453,3 +453,5 @@ def end_chat(request, room_id):
     room.delete()
 
     return redirect("chat:dashboard")
+
+

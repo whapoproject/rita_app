@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,186 +8,697 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Private Chat</title>
+    <title>RITA Secure Guest Chat</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
 
-        body{
-            font-family: Arial, sans-serif;
-            background:#0f172a;
-            color:white;
+        *{
             margin:0;
             padding:0;
+            box-sizing:border-box;
         }
 
-        .container{
-            max-width:600px;
-            margin:auto;
-            padding:20px;
-        }
-
-        .box{
-            background:#1e293b;
-            padding:20px;
-            border-radius:12px;
-            margin-top:30px;
-        }
-
-        input{
+        html,
+        body{
             width:100%;
-            padding:12px;
-            border:none;
-            border-radius:8px;
-            margin-top:10px;
-            margin-bottom:15px;
-            font-size:16px;
+            height:100%;
         }
 
-        button{
-            width:100%;
-            padding:12px;
-            background:#2563eb;
+        body{
+
+            font-family:'Inter',sans-serif;
+
+            overflow:hidden;
+
+            background:
+            linear-gradient(rgba(2,6,23,0.82),rgba(2,6,23,0.92)),
+            url("{% static 'chat/images/rita-bg0.png' %}");
+
+            background-size:cover;
+            background-position:center;
+
             color:white;
-            border:none;
-            border-radius:8px;
-            cursor:pointer;
-            font-size:16px;
         }
 
-        button:hover{
-            background:#1d4ed8;
+        body::before{
+
+            content:"";
+
+            position:fixed;
+
+            inset:0;
+
+            backdrop-filter:blur(6px);
+
+            z-index:-1;
         }
 
-        .message-box{
-            background:#334155;
-            padding:10px;
-            border-radius:10px;
-            margin-top:10px;
+        body::after{
+
+            content:"CONFIDENTIAL • RITA SECURE";
+
+            position:fixed;
+
+            top:50%;
+
+            left:50%;
+
+            transform:
+            translate(-50%,-50%)
+            rotate(-30deg);
+
+            font-size:52px;
+
+            font-weight:800;
+
+            color:rgba(255,255,255,0.03);
+
+            white-space:nowrap;
+
+            pointer-events:none;
+
+            z-index:9998;
         }
 
-        .my-message{
-            background:#2563eb;
+        .privacy-overlay{
+
+            position:fixed;
+
+            inset:0;
+
+            pointer-events:none;
+
+            z-index:9999;
+
+            background-image:
+            repeating-linear-gradient(
+                45deg,
+                rgba(255,255,255,0.015) 0px,
+                rgba(255,255,255,0.015) 1px,
+                transparent 1px,
+                transparent 20px
+            );
+        }
+
+        .chat-container{
+
+            width:100%;
+
+            max-width:1400px;
+
+            height:100dvh;
+
+            margin:auto;
+
+            display:flex;
+
+            flex-direction:column;
+
+            padding:14px;
+
+            gap:12px;
+        }
+
+        .top-bar{
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+            gap:20px;
+
+            padding:18px 22px;
+
+            border-radius:24px;
+
+            background:rgba(255,255,255,0.05);
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            backdrop-filter:blur(20px);
+
+            flex-shrink:0;
+        }
+
+        .top-left h2{
+
+            font-size:28px;
+
+            font-weight:800;
         }
 
         .top-text{
+
+            margin-top:6px;
+
             color:#94a3b8;
-            font-size:14px;
+
+            font-size:13px;
+
+            word-break:break-all;
         }
 
-        .error{
-            color:red;
-            margin-bottom:10px;
+        .timer{
+
+            padding:12px 18px;
+
+            border-radius:14px;
+
+            background:rgba(250,204,21,0.12);
+
+            border:1px solid rgba(250,204,21,0.2);
+
+            color:#facc15;
+
+            font-size:14px;
+
+            font-weight:700;
+        }
+
+        .secure-indicator{
+
+            text-align:center;
+
+            color:#94a3b8;
+
+            font-size:12px;
+
+            animation:pulse 2s infinite;
+        }
+
+        #typing-status{
+
+            margin-top:10px;
+
+            color:#94a3b8;
+
+            font-size:13px;
+
+            min-height:18px;
+
+            padding-left:4px;
+
+            animation:pulse 1.5s infinite;
+        }
+
+        @keyframes pulse{
+
+            0%{opacity:0.5;}
+            50%{opacity:1;}
+            100%{opacity:0.5;}
+        }
+
+        .chat-main{
+
+            flex:1;
+
+            min-height:0;
+
+            display:flex;
+
+            flex-direction:column;
+
+            gap:12px;
         }
 
         #messages{
-            max-height:400px;
+
+            flex:1;
+
             overflow-y:auto;
-            margin-top:20px;
+
+            padding:28px;
+
+            border-radius:28px;
+
+            background:rgba(255,255,255,0.04);
+
+            border:1px solid rgba(255,255,255,0.06);
+
+            backdrop-filter:blur(18px);
+
+            display:flex;
+
+            flex-direction:column;
+
+            gap:16px;
+
+            scroll-behavior:smooth;
+        }
+
+        #messages::-webkit-scrollbar{
+
+            width:6px;
+        }
+
+        #messages::-webkit-scrollbar-thumb{
+
+            background:#334155;
+
+            border-radius:20px;
+        }
+
+        .message-box{
+
+            max-width:72%;
+
+            padding:16px 18px;
+
+            border-radius:24px;
+
+            background:rgba(255,255,255,0.07);
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            border-bottom-left-radius:8px;
+
+            animation:fadeIn 0.25s ease;
+
+            transition:
+            opacity 0.3s ease,
+            transform 0.3s ease,
+            filter 0.3s ease;
+        }
+
+        .my-message{
+
+            align-self:flex-end;
+
+            background:
+            linear-gradient(135deg,#2563eb,#3b82f6);
+
+            border:none;
+
+            border-bottom-right-radius:8px;
+        }
+
+        .message-box strong{
+
+            display:block;
+
+            margin-bottom:8px;
+
+            color:#cbd5e1;
+
+            font-size:13px;
+        }
+
+        .message-text{
+
+            font-size:15px;
+
+            line-height:1.7;
+
+            word-wrap:break-word;
+        }
+
+        .meta-row{
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+            margin-top:10px;
+        }
+
+        .countdown{
+
+            font-size:11px;
+
+            color:#facc15;
+
+            opacity:0.9;
+        }
+
+        .seen{
+
+            font-size:11px;
+
+            color:#93c5fd;
+        }
+
+        .message-box small{
+
+            display:block;
+
+            margin-top:8px;
+
+            text-align:right;
+
+            color:#cbd5e1;
+
+            font-size:11px;
+        }
+
+        .chat-form{
+
+            padding:16px;
+
+            border-radius:24px;
+
+            background:rgba(255,255,255,0.05);
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            backdrop-filter:blur(25px);
+        }
+
+        .join-form{
+
+            margin-top:25px;
+        }
+
+        input{
+
+            width:100%;
+
+            padding:16px;
+
+            border:none;
+
+            outline:none;
+
+            border-radius:16px;
+
+            background:rgba(255,255,255,0.05);
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            color:white;
+
+            font-size:15px;
+
+            margin-bottom:14px;
+        }
+
+        input::placeholder{
+
+            color:#94a3b8;
+        }
+
+        .send-row{
+
+            display:flex;
+
+            gap:12px;
+        }
+
+        .send-row input{
+
+            margin-bottom:0;
+        }
+
+        button{
+
+            border:none;
+
+            cursor:pointer;
+
+            color:white;
+
+            font-weight:700;
+
+            transition:0.25s;
+        }
+
+        .join-btn{
+
+            width:100%;
+
+            padding:16px;
+
+            border-radius:16px;
+
+            background:
+            linear-gradient(90deg,#9333ea,#2563eb);
+        }
+
+        .send-btn{
+
+            width:60px;
+
+            min-width:60px;
+
+            height:60px;
+
+            border-radius:50%;
+
+            background:
+            linear-gradient(90deg,#9333ea,#2563eb);
+
+            font-size:20px;
+        }
+
+        button:hover{
+
+            transform:translateY(-2px);
+        }
+
+        .error{
+
+            margin-top:12px;
+
+            color:#f87171;
+        }
+
+        .room-ended{
+
+            position:fixed;
+
+            inset:0;
+
+            background:#020617;
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            flex-direction:column;
+
+            text-align:center;
+
+            z-index:99999;
+
+            padding:20px;
+        }
+
+        .room-ended h1{
+
+            font-size:38px;
+
+            margin-bottom:14px;
+        }
+
+        .room-ended p{
+
+            color:#94a3b8;
+
+            max-width:500px;
+
+            line-height:1.7;
+        }
+
+        @media(max-width:700px){
+
+            .chat-container{
+
+                padding:0;
+
+                gap:0;
+            }
+
+            .top-bar{
+
+                border-radius:0;
+
+                padding:14px 16px;
+            }
+
+            .top-left h2{
+
+                font-size:18px;
+            }
+
+            #messages{
+
+                border-radius:0;
+
+                padding:16px;
+            }
+
+            .message-box{
+
+                max-width:90%;
+            }
+
+            .chat-form{
+
+                border-radius:22px 22px 0 0;
+            }
+
+            .send-btn{
+
+                width:54px;
+                min-width:54px;
+                height:54px;
+            }
+        }
+
+        @keyframes fadeIn{
+
+            from{
+                opacity:0;
+                transform:
+                translateY(10px)
+                scale(0.96);
+            }
+
+            to{
+                opacity:1;
+                transform:
+                translateY(0)
+                scale(1);
+            }
         }
 
     </style>
 
 </head>
+
 <body>
 
-<div class="container">
+<div class="privacy-overlay"></div>
 
-    <div class="box">
+<audio id="typingSound" preload="auto">
+    <source
+        src="{% static 'chat/typing.mp3' %}"
+        type="audio/mpeg"
+    >
+</audio>
 
-        <h2>
-            Private Chat
-        </h2>
+<div class="chat-container">
 
-        <p class="top-text">
-            Connected with:
-            <strong>{{ room.creator.username }}</strong>
-        </p>
+    <div class="top-bar">
 
-        <!-- JOIN SCREEN -->
-        {% if not guest_name %}
+        <div class="top-left">
 
-            {% if error %}
-                <p class="error">
-                    {{ error }}
-                </p>
-            {% endif %}
+            <h2>
+                🔐 RITA Secure Chat
+            </h2>
 
-            <form method="POST">
+            <div class="top-text">
+                Connected with:
+                <strong>{{ room.creator.username }}</strong>
+            </div>
 
-                {% csrf_token %}
+            <div class="top-text">
+                Room:
+                {{ room.room_id }}
+            </div>
 
-                <input
-                    type="text"
-                    name="nickname"
-                    placeholder="Choose your nickname"
-                    required
-                >
+        </div>
 
-                <button type="submit">
-                    Join Chat
-                </button>
+        <div
+            class="timer"
+            id="room-timer"
+        >
+            ⏳ Loading...
+        </div>
 
-            </form>
+    </div>
 
-        {% else %}
+    <div class="secure-indicator">
+        🔒 End-to-End Encrypted
+    </div>
 
-            <!-- CHAT AREA -->
+    {% if not guest_name %}
 
-            <p>
-                You joined as:
-                <strong>{{ guest_name }}</strong>
+    <div class="chat-form">
+
+        <h3>
+            Join Secure Room
+        </h3>
+
+        {% if error %}
+
+            <p class="error">
+                {{ error }}
             </p>
 
-            <div id="messages">
+        {% endif %}
 
-                {% for msg in messages %}
+        <form
+            method="POST"
+            class="join-form"
+        >
 
-                    <div class="message-box {% if msg.sender_name == guest_name %}my-message{% endif %}">
+            {% csrf_token %}
 
-                        <strong>
-                            {{ msg.sender_name }}
-                        </strong>
+            <input
+                type="text"
+                name="nickname"
+                placeholder="Add nickname like User"
+                required
+            >
 
-                        <p>
-                            {{ msg.content }}
-                        </p>
+            <button
+                type="submit"
+                class="join-btn"
+            >
+                Join Chat
+            </button>
 
-                        <small>
-                            {{ msg.timestamp|date:"H:i" }}
-                        </small>
+        </form>
 
-                    </div>
+    </div>
 
-                {% empty %}
+    {% else %}
 
-                    <p>
-                        No messages yet.
-                    </p>
+    <div class="chat-main">
 
-                {% endfor %}
+        <div id="messages"></div>
 
-            </div>
+        <div class="chat-form">
 
             <form id="chat-form">
 
                 {% csrf_token %}
 
-                <input
-                    type="text"
-                    id="message-input"
-                    placeholder="Type message..."
-                    required
-                >
+                <div class="send-row">
 
-                <button type="submit">
-                    Send Message
-                </button>
+                    <input
+                        type="text"
+                        id="message-input"
+                        placeholder="Type secure message..."
+                        required
+                    >
+
+                    <button
+                        type="submit"
+                        class="send-btn"
+                    >
+                        ➤
+                    </button>
+
+                </div>
 
             </form>
 
-        {% endif %}
+            <div id="typing-status"></div>
+
+        </div>
 
     </div>
+
+    {% endif %}
 
 </div>
 
@@ -193,70 +706,421 @@
 
 <script>
 
-const form = document.getElementById('chat-form');
+const form =
+document.getElementById('chat-form');
 
-form.addEventListener('submit', async function(e){
+const messagesContainer =
+document.getElementById('messages');
+
+const typingInput =
+document.getElementById(
+    "message-input"
+);
+
+const typingStatus =
+document.getElementById(
+    "typing-status"
+);
+
+const typingSound =
+document.getElementById(
+    "typingSound"
+);
+
+let roomExpired = false;
+
+/* SEND */
+
+form.addEventListener(
+    'submit',
+    async function(e){
 
     e.preventDefault();
 
-    const messageInput =
-        document.getElementById('message-input');
+    if(roomExpired) return;
 
-    const message = messageInput.value;
+    const message =
+    typingInput.value.trim();
 
-    const formData = new FormData();
+    if(!message) return;
 
-    formData.append('content', message);
+    const formData =
+    new FormData();
 
-    const response = await fetch(
+    formData.append(
+        'content',
+        message
+    );
+
+    const response =
+    await fetch(
         "/send-message/{{ room.room_id }}/",
         {
-            method: "POST",
-            body: formData,
+            method:"POST",
+            body:formData,
             headers:{
-                "X-CSRFToken":"{{ csrf_token }}"
+                "X-CSRFToken":
+                "{{ csrf_token }}"
             }
         }
     );
 
+    if(response.status === 404){
+
+        endRoomScreen();
+
+        return;
+    }
+
     if(response.ok){
 
-        messageInput.value = "";
+        typingInput.value = "";
 
         loadMessages();
     }
 
 });
 
+/* TYPING */
 
-// AUTO LOAD MESSAGES
-async function loadMessages(){
+let typingTimeout;
 
-    const response = await fetch(
-        "/fetch-messages/{{ room.room_id }}/"
+typingInput.addEventListener(
+    "input",
+    async () => {
+
+    if(roomExpired) return;
+
+    typingStatus.innerText =
+    "You are typing...";
+
+    try{
+
+        typingSound.pause();
+
+        typingSound.currentTime = 0;
+
+        typingSound.volume = 0.12;
+
+        typingSound.play();
+
+    }catch(err){}
+
+    fetch(
+        "/typing/{{ room.room_id }}/",
+        {
+            method:"POST",
+            headers:{
+                "X-CSRFToken":
+                "{{ csrf_token }}"
+            }
+        }
     );
 
-    const data = await response.json();
+    clearTimeout(typingTimeout);
 
-    let html = "";
+    typingTimeout =
+    setTimeout(() => {
 
-    data.messages.forEach(msg => {
+        typingStatus.innerText = "";
 
-        html += `
-            <div class="message-box ${msg.sender === "{{ guest_name }}" ? "my-message" : ""}">
-                <strong>${msg.sender}</strong>
-                <p>${msg.content}</p>
-                <small>${msg.timestamp}</small>
-            </div>
-        `;
-    });
+    },1000);
+});
 
-    document.getElementById('messages').innerHTML = html;
+/* LOAD */
+
+async function loadMessages(){
+
+    if(roomExpired) return;
+
+    try{
+
+        const response =
+        await fetch(
+            "/fetch-messages/{{ room.room_id }}/"
+        );
+
+        if(response.status === 404){
+
+            endRoomScreen();
+
+            return;
+        }
+
+        const data =
+        await response.json();
+
+        const shouldStickBottom =
+            messagesContainer.scrollTop +
+            messagesContainer.clientHeight >=
+            messagesContainer.scrollHeight - 120;
+
+        data.messages.forEach(msg => {
+
+            let existing =
+            document.querySelector(
+                `.message-box[data-id="${msg.id}"]`
+            );
+
+            if(existing){
+                return;
+            }
+
+            const div =
+            document.createElement("div");
+
+            div.className =
+            `message-box ${
+                msg.sender ===
+                "{{ guest_name }}"
+                ? "my-message"
+                : ""
+            }`;
+
+            div.setAttribute(
+                "data-id",
+                msg.id
+            );
+
+            div.innerHTML = `
+
+                <strong>
+                    ${msg.sender}
+                </strong>
+
+                <div class="message-text">
+                    ${msg.content}
+                </div>
+
+                <div class="meta-row">
+
+                    <div
+                        class="countdown"
+                        id="cd-${msg.id}"
+                    >
+                        self destruct 10s
+                    </div>
+
+                    <div class="seen">
+                        ✓✓ Seen
+                    </div>
+
+                </div>
+
+                <small>
+                    ${msg.timestamp}
+                </small>
+
+            `;
+
+            messagesContainer.appendChild(div);
+
+            startCountdown(msg.id, div);
+        });
+
+        document.querySelectorAll(
+            ".message-box"
+        ).forEach(el => {
+
+            const id =
+            el.getAttribute("data-id");
+
+            const exists =
+            data.messages.some(
+                msg =>
+                String(msg.id) ===
+                String(id)
+            );
+
+            if(!exists){
+
+                el.remove();
+            }
+        });
+
+        if(shouldStickBottom){
+
+            messagesContainer.scrollTop =
+            messagesContainer.scrollHeight;
+        }
+
+    }catch(err){
+
+        endRoomScreen();
+    }
 }
 
+/* CHECK TYPING */
 
-// AUTO REFRESH
-setInterval(loadMessages, 3000);
+async function checkTyping(){
+
+    if(roomExpired) return;
+
+    try{
+
+        const response =
+        await fetch(
+            "/typing-status/{{ room.room_id }}/"
+        );
+
+        const data =
+        await response.json();
+
+        if(
+            data.typing &&
+            data.user !==
+            "{{ guest_name }}"
+        ){
+
+            typingStatus.innerText =
+            `${data.user} is typing...`;
+
+        }
+
+    }catch(err){}
+}
+
+/* MESSAGE SELF DESTRUCT */
+
+function startCountdown(id, div){
+
+    let timeLeft = 10;
+
+    const el =
+    document.getElementById(
+        `cd-${id}`
+    );
+
+    const interval =
+    setInterval(() => {
+
+        timeLeft--;
+
+        if(el){
+
+            if(timeLeft <= 1){
+
+                div.style.filter =
+                "blur(2px)";
+            }
+
+            el.innerText =
+            `self destruct ${timeLeft}s`;
+        }
+
+        if(timeLeft <= 0){
+
+            clearInterval(interval);
+
+            div.style.opacity = "0";
+
+            div.style.transform =
+            "scale(0.85)";
+
+            setTimeout(() => {
+
+                div.remove();
+
+            },250);
+        }
+
+    },1000);
+}
+
+/* ROOM TIMER */
+
+let roomEndTime =
+new Date(
+"{{ room.expires_at|date:'c' }}"
+);
+
+function updateRoomTimer(){
+
+    if(roomExpired) return;
+
+    let now = new Date();
+
+    let diff =
+    roomEndTime - now;
+
+    if(diff <= 0){
+
+        endRoomScreen();
+
+        return;
+    }
+
+    let totalSeconds =
+    Math.floor(diff / 1000);
+
+    let minutes =
+    Math.floor(totalSeconds / 60);
+
+    let seconds =
+    totalSeconds % 60;
+
+    document.getElementById(
+        "room-timer"
+    ).innerText =
+    `⏳ ${minutes}:${seconds
+        .toString()
+        .padStart(2,'0')}`;
+}
+
+/* ROOM CLOSED */
+
+function endRoomScreen(){
+
+    if(roomExpired) return;
+
+    roomExpired = true;
+
+    document.body.innerHTML = `
+
+        <div class="room-ended">
+
+            <h1>
+                🔒 Room Closed
+            </h1>
+
+            <p>
+                This secure room has expired
+                or was ended by creator.
+            </p>
+
+        </div>
+    `;
+}
+
+/* AUTO REFRESH */
+
+setInterval(loadMessages, 1500);
+
+setInterval(updateRoomTimer, 1000);
+
+setInterval(checkTyping, 800);
+
+loadMessages();
+
+updateRoomTimer();
+
+/* PRIVACY MODE */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+    if(document.hidden){
+
+        document.body.style.filter =
+        "blur(12px)";
+
+    }else{
+
+        document.body.style.filter =
+        "none";
+    }
+});
 
 </script>
 
